@@ -263,37 +263,3 @@ ticket_history
 
 Python Developer | Backend Development | SQL | AI/NLP
 
-````
-
-### Step 2 — Save and check Git
-
-After saving `README.md`, run:
-
-```powershell
-git status
-````
-
-You should see something similar to:
-
-```text
-Untracked files:
-    README.md
-```
-
-Then run:
-
-```powershell
-git add README.md
-git commit -m "Add project README"
-git push
-```
-
-### Step 3
-
-Send me the output of:
-
-```powershell
-git status
-```
-
-Then we'll verify the README on GitHub and move to **screenshots + GitHub portfolio polish**.
