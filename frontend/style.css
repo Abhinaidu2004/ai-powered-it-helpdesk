@@ -1,0 +1,484 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+}
+
+
+/* Header */
+
+header {
+    background: #1f2937;
+    color: white;
+
+    padding: 20px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+
+/* Main */
+
+.home-container {
+    min-height: 80vh;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.home-container h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.home-container p {
+    margin-bottom: 25px;
+}
+
+
+/* Button */
+
+button {
+    padding: 12px 25px;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+
+/* Footer */
+
+footer {
+    text-align: center;
+
+    padding: 20px;
+
+    background: #e5e7eb;
+}
+
+
+/* Login Page */
+
+.login-container {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    width: 400px;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-box h1 {
+    margin-bottom: 10px;
+}
+
+.login-box > p {
+    margin-bottom: 20px;
+}
+
+.login-box label {
+    display: block;
+
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.login-box input {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+
+.login-box button {
+    width: 100%;
+
+    margin-top: 20px;
+
+    background: #1f2937;
+    color: white;
+}
+
+#message {
+    margin-top: 15px;
+    text-align: center;
+}
+
+
+/* Dashboard */
+
+.dashboard-container {
+    padding: 30px 40px;
+}
+
+.dashboard-container h2 {
+    margin-bottom: 10px;
+}
+
+#welcomeMessage {
+    margin-bottom: 25px;
+}
+
+
+/* Statistics */
+
+.stats {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin-bottom: 15px;
+}
+
+.stat-card p {
+    font-size: 30px;
+
+    font-weight: bold;
+}
+
+
+/* Navigation */
+
+header nav {
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+header nav button {
+    background: white;
+
+    color: #1f2937;
+
+    padding: 8px 15px;
+
+    font-size: 14px;
+}
+
+
+/* Tickets */
+
+.tickets-section {
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.tickets-section h2 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #f4f6f8;
+}
+
+
+/* Ticket Details */
+
+.ticket-container {
+    padding: 30px 40px;
+}
+
+.ticket-card {
+    background: white;
+
+    padding: 25px;
+
+    margin-top: 20px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.ticket-card h3 {
+    margin-bottom: 20px;
+}
+
+.ticket-card p {
+    margin-bottom: 15px;
+}
+
+
+/* Ticket Sections */
+
+.ticket-section {
+    background: white;
+
+    padding: 25px;
+
+    margin-top: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.ticket-section h2 {
+    margin-bottom: 20px;
+}
+
+
+/* Comment */
+
+.comment-card {
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+}
+
+.comment-card p {
+    margin-bottom: 8px;
+}
+
+.comment-date {
+    font-size: 13px;
+
+    color: #666;
+}
+
+
+/* Comment Form */
+
+#commentForm {
+    margin-top: 25px;
+}
+
+#commentForm label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: bold;
+}
+
+#commentForm textarea {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    resize: vertical;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 15px;
+}
+
+#commentForm button {
+    margin-top: 12px;
+
+    background: #1f2937;
+
+    color: white;
+}
+
+
+/* History */
+
+.history-item {
+    padding: 15px;
+
+    margin-bottom: 12px;
+
+    border-left: 4px solid #1f2937;
+
+    background: #f4f6f8;
+}
+
+.history-item p {
+    margin-bottom: 6px;
+}
+
+
+.create-ticket-container {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.create-ticket-box {
+    width: 600px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.create-ticket-box h2 {
+    margin-bottom: 10px;
+}
+
+.create-ticket-box > p {
+    margin-bottom: 25px;
+}
+
+#ticketForm label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+#ticketForm input,
+#ticketForm textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+}
+
+#ticketForm textarea {
+    resize: vertical;
+}
+
+#ticketForm button {
+    margin-top: 20px;
+    background: #1f2937;
+    color: white;
+}
+
+#ticketMessage {
+    margin-top: 15px;
+    text-align: center;
+}
+
+
+#agentActions select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+#updateStatusButton {
+    margin-top: 15px;
+    background: #1f2937;
+    color: white;
+}
+
+.tickets-section label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.tickets-section select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+#assignTicketButton {
+    margin-top: 20px;
+    background: #1f2937;
+    color: white;
+}
+
+#assignmentMessage {
+    margin-top: 15px;
+}
+
+#clearFilters {
+    margin-top: 20px;
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#clearFilters:hover {
+    background: #374151;
+}

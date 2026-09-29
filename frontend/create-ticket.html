@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Help Desk - Create Ticket</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>IT Help Desk</h1>
+
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="create-ticket.html">Create Ticket</a>
+            <button onclick="logout()">Logout</button>
+        </nav>
+    </header>
+
+    <main class="create-ticket-container">
+
+        <div class="create-ticket-box">
+
+            <h2>Create New Ticket</h2>
+
+            <p>Report your IT problem below.</p>
+
+            <form id="ticketForm">
+
+                <label for="title">
+                    Ticket Title
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="Example: Wi-Fi not working"
+                    required
+                >
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    rows="6"
+                    placeholder="Describe your problem..."
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Create Ticket
+                </button>
+
+            </form>
+
+            <p id="ticketMessage"></p>
+
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

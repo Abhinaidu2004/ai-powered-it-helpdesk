@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Help Desk - Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>IT Help Desk</h1>
+
+        <nav>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="create-ticket.html">Create Ticket</a>
+
+            <button onclick="logout()">Logout</button>
+
+        </nav>
+
+    </header>
+
+
+    <main class="dashboard-container">
+
+        <h2>Dashboard</h2>
+
+        <p id="welcomeMessage"></p>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <h3>Total Tickets</h3>
+                <p id="totalTickets">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Open</h3>
+                <p id="openTickets">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>In Progress</h3>
+                <p id="progressTickets">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Resolved</h3>
+                <p id="resolvedTickets">0</p>
+            </div>
+
+        </section>
+
+
+        <section class="tickets-section">
+
+            <h2>Recent Tickets</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="ticketTable">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

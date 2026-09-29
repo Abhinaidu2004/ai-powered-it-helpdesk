@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Help Desk - Admin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+
+        <h1>IT Help Desk</h1>
+
+        <nav>
+
+            <a href="admin-dashboard.html">
+                Dashboard
+            </a>
+
+            <button onclick="logout()">
+                Logout
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <main class="dashboard-container">
+
+        <h2>Admin Dashboard</h2>
+
+        <p id="adminWelcome">
+            Welcome, Admin
+        </p>
+
+
+        <!-- Statistics -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <h3>Total Tickets</h3>
+
+                <p id="adminTotalTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Open</h3>
+
+                <p id="adminOpenTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>In Progress</h3>
+
+                <p id="adminProgressTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Resolved</h3>
+
+                <p id="adminResolvedTickets">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Users -->
+
+        <section class="tickets-section">
+
+            <h2>User Management</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Created</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="adminUserTable">
+
+                    <tr>
+
+                        <td colspan="5">
+                            Loading users...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- Tickets -->
+        <section class="tickets-section">
+
+            <h2>Ticket Filters</h2>
+
+            <label for="ticketSearch">
+                Search
+            </label>
+
+            <input
+                type="text"
+                id="ticketSearch"
+                placeholder="Search by ticket title..."
+            >
+
+
+            <label for="statusFilter">
+                Status
+            </label>
+
+            <select id="statusFilter">
+
+                <option value="">
+                    All Statuses
+                </option>
+
+                <option value="Open">
+                    Open
+                </option>
+
+                <option value="In Progress">
+                    In Progress
+                </option>
+
+                <option value="Resolved">
+                    Resolved
+                </option>
+
+                <option value="Closed">
+                    Closed
+                </option>
+
+            </select>
+
+
+            <label for="priorityFilter">
+                Priority
+            </label>
+
+            <select id="priorityFilter">
+
+                <option value="">
+                    All Priorities
+                </option>
+
+                <option value="Low">
+                    Low
+                </option>
+
+                <option value="Medium">
+                    Medium
+                </option>
+
+                <option value="High">
+                    High
+                </option>
+
+                <option value="Critical">
+                    Critical
+                </option>
+            </select>
+
+            <label for="agentFilter">
+                Assigned Agent
+            </label>
+
+            <select id="agentFilter">
+
+                <option value="">
+                    All Agents
+                </option>
+            </select>
+
+
+            <button
+                type="button"
+                id="clearFilters"
+            >
+                Clear Filters
+            </button>
+
+
+
+
+        </section>
+
+        <section class="tickets-section">
+
+            <h2>Assign Ticket</h2>
+
+            <label for="assignmentTicket">
+                Ticket
+            </label>
+
+            <select id="assignmentTicket">
+                <option value="">
+                    Select Ticket
+                </option>
+            </select>
+
+
+            <label for="assignmentAgent">
+                Agent
+            </label>
+
+            <select id="assignmentAgent">
+                <option value="">
+                    Select Agent
+                </option>
+            </select>
+
+
+            <button
+                type="button"
+                id="assignTicketButton"
+            >
+                Assign Ticket
+            </button>
+
+
+            <p id="assignmentMessage"></p>
+
+        </section>
+
+        <section class="tickets-section">
+
+            <h2>All Tickets</h2>
+
+            <table>
+
+                <thead>
+
+                 <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>User ID</th>
+                    <th>Assigned To</th>
+                    <th>Action</th>
+                </tr>   
+
+                </thead>
+
+                <tbody id="adminTicketTable">
+
+                    <tr>
+
+                        <td colspan="8">
+                            Loading tickets...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

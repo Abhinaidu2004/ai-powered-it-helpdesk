@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>IT Help Desk - Agent Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>IT Help Desk</h1>
+
+        <nav>
+
+            <a href="agent-dashboard.html">
+                Dashboard
+            </a>
+
+            <button onclick="logout()">
+                Logout
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <main class="dashboard-container">
+
+        <h2>Agent Dashboard</h2>
+
+        <p id="agentWelcome">
+            Welcome, Agent
+        </p>
+
+
+        <!-- Statistics -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <h3>Assigned Tickets</h3>
+
+                <p id="assignedTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Open</h3>
+
+                <p id="openTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>In Progress</h3>
+
+                <p id="progressTickets">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Resolved</h3>
+
+                <p id="resolvedTickets">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Assigned Tickets -->
+
+        <section class="tickets-section">
+
+            <h2>Assigned Tickets</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Title</th>
+
+                        <th>Category</th>
+
+                        <th>Priority</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="agentTicketTable">
+
+                    <tr>
+
+                        <td colspan="5">
+                            Loading tickets...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

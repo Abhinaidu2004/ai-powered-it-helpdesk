@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Help Desk - Ticket</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>IT Help Desk</h1>
+
+        <nav>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="create-ticket.html">Create Ticket</a>
+
+            <button onclick="logout()">Logout</button>
+
+        </nav>
+
+    </header>
+
+
+    <main class="ticket-container">
+
+    <h2>Ticket Details</h2>
+
+    <!-- Ticket Details -->
+
+    <div id="ticketDetails">
+
+        <p>Loading ticket...</p>
+
+    </div>
+
+    <div
+    id="agentActions"
+    class="ticket-section"
+    style="display: none;"
+>
+
+    <h2>Agent Actions</h2>
+
+    <label for="ticketStatus">
+        Update Status
+    </label>
+
+    <select id="ticketStatus">
+
+        <option value="Open">
+            Open
+        </option>
+
+        <option value="In Progress">
+            In Progress
+        </option>
+
+        <option value="Resolved">
+            Resolved
+        </option>
+
+        <option value="Closed">
+            Closed
+        </option>
+
+    </select>
+
+    <button
+        type="button"
+        id="updateStatusButton"
+    >
+        Update Status
+    </button>
+
+    <p id="statusMessage"></p>
+
+</div>
+
+
+    <!-- Comments -->
+
+    <section class="ticket-section">
+
+        <h2>Comments</h2>
+
+        <div id="commentsList">
+
+            <p>Loading comments...</p>
+
+        </div>
+
+
+        <form id="commentForm">
+
+            <label for="comment">
+                Add Comment
+            </label>
+
+            <textarea
+                id="comment"
+                rows="4"
+                placeholder="Enter your comment"
+                required
+            ></textarea>
+
+            <button type="submit">
+                Add Comment
+            </button>
+
+        </form>
+
+        <p id="commentMessage"></p>
+
+    </section>
+
+
+    <!-- Ticket History -->
+
+    <section class="ticket-section">
+
+        <h2>Ticket History</h2>
+
+        <div id="historyList">
+
+            <p>Loading history...</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
