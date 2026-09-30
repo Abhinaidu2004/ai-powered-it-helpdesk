@@ -38,13 +38,23 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 #MySQL Connection
 def get_db_connection():
+    ca_cert = os.getenv("AIVEN_CA_CERT")
+
+    if ca_cert:
+        ca_path = "/tmp/aiven-ca.pem"
+
+        with open(ca_path, "w") as f:
+            f.write(ca_cert)
+    else:
+        ca_path = "ca.pem"
+
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
         port=int(os.getenv("DB_PORT")),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME"),
-        ssl_ca="ca.pem"
+        ssl_ca=ca_path
     )
 
 
