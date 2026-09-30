@@ -53,17 +53,30 @@ if (loginForm) {
                     data.user_id
                 );
 
-                message.textContent = "Login successful!";
-
-                window.location.href = "dashboard.html";
-
-            } else {
-
                 message.textContent =
-                    data.detail || "Login failed.";
+                    "Login successful!";
 
+                if (data.role === "admin") {
+
+                    window.location.href =
+                        "admin-dashboard.html";
+
+                } else if (data.role === "agent") {
+
+                    window.location.href =
+                        "agent-dashboard.html";
+
+                } else if (data.role === "employee") {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                } else {
+
+                    message.textContent =
+                        "Unknown user role.";
+                }
             }
-
         } catch (error) {
 
             console.error(error);
@@ -108,8 +121,6 @@ async function loadDashboard() {
 
         const stats = await statsResponse.json();
 
-        console.log("Dashboard Stats:", stats);
-
         document.getElementById("totalTickets").textContent =
     stats.total_tickets;
 
@@ -135,9 +146,6 @@ async function loadDashboard() {
         );
 
         const tickets = await ticketsResponse.json();
-
-        console.log("Tickets:", tickets);
-
 
         // Display tickets
 
@@ -308,6 +316,34 @@ async function loadTicket() {
 
         `;
 
+        // Display recommended solution
+        const solutionElement =
+            document.getElementById("recommendedSolution");
+
+        if (solutionElement) {
+
+            if (ticket.recommended_solution) {
+
+                solutionElement.innerHTML = `
+
+                    <div class="solution-card">
+
+                        <p>
+                            ${ticket.recommended_solution}
+                        </p>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                solutionElement.innerHTML =
+                    "<p>No recommended solution available.</p>";
+
+            }
+        }
+
         showAgentActions(ticket.status);        
 
     } catch (error) {
@@ -360,8 +396,6 @@ async function loadComments(ticketId) {
         );
 
         const comments = await response.json();
-
-        console.log("Comments:", comments);
 
         if (!response.ok) {
 
@@ -474,11 +508,6 @@ if (commentForm) {
                 const data =
                     await response.json();
 
-                console.log(
-                    "Add comment:",
-                    data
-                );
-
                 if (response.ok) {
 
                     message.textContent =
@@ -542,11 +571,6 @@ async function loadHistory(ticketId) {
 
         const history =
             await response.json();
-
-        console.log(
-            "Ticket History:",
-            history
-        );
 
         if (!response.ok) {
 
@@ -663,9 +687,6 @@ if (ticketForm) {
             const userId =
                 localStorage.getItem("user_id");
 
-            console.log("USER ID:", userId);
-            console.log("USER ID NUMBER:", Number(userId));
-
             const title =
                 document.getElementById("title").value;
 
@@ -706,11 +727,6 @@ if (ticketForm) {
 
                 const data =
                     await response.json();
-
-                console.log(
-                    "Create Ticket:",
-                    data
-                );
 
                 if (response.ok) {
 
@@ -798,11 +814,6 @@ if (registerForm) {
                 const data =
                     await response.json();
 
-                console.log(
-                    "Registration:",
-                    data
-                );
-
                 if (response.ok) {
 
                     message.textContent =
@@ -861,14 +872,10 @@ async function loadAgentDashboard() {
         return;
     }
 
-
     // Only agents can access this page
 
     if (role !== "agent") {
-
-        window.location.href =
-            "dashboard.html";
-
+        window.location.href = "login.html";
         return;
     }
 
@@ -888,13 +895,6 @@ async function loadAgentDashboard() {
 
         const tickets =
             await response.json();
-
-
-        console.log(
-            "Agent Tickets:",
-            tickets
-        );
-
 
         if (!response.ok) {
 
@@ -1096,6 +1096,11 @@ if (updateStatusButton) {
                     "ticketStatus"
                 ).value;
 
+            const resolution =
+                document.getElementById(
+                    "ticketResolution"
+                ).value;
+
             const message =
                 document.getElementById(
                     "statusMessage"
@@ -1117,7 +1122,8 @@ if (updateStatusButton) {
                         },
 
                         body: JSON.stringify({
-                            status: status
+                            status: status,
+                            resolution: resolution
                         })
                     }
                 );
@@ -1125,15 +1131,10 @@ if (updateStatusButton) {
                 const data =
                     await response.json();
 
-                console.log(
-                    "Update Status:",
-                    data
-                );
-
                 if (response.ok) {
 
                     message.textContent =
-                        "Status updated successfully.";
+                        "Status and resolution updated successfully.";
 
                     loadTicket();
                     loadHistory(ticketId);
@@ -1142,7 +1143,7 @@ if (updateStatusButton) {
 
                     message.textContent =
                         data.detail ||
-                        "Unable to update status.";
+                        "Unable to update ticket.";
 
                 }
 
@@ -1205,16 +1206,11 @@ async function loadAdminDashboard() {
                 }
             );
 
-
-        const tickets =
+        adminTickets =
             await ticketResponse.json();
 
-
-        console.log(
-            "Admin Tickets:",
-            tickets
-        );
-
+        const tickets =
+            adminTickets;
 
         if (!ticketResponse.ok) {
 
@@ -1303,13 +1299,6 @@ async function loadAdminDashboard() {
         const users =
             await userResponse.json();
 
-
-        console.log(
-            "Admin Users:",
-            users
-        );
-
-
         if (!userResponse.ok) {
 
             console.error(
@@ -1371,6 +1360,7 @@ async function loadAdminDashboard() {
 // =========================
 // ADMIN DASHBOARD START
 // =========================
+let adminTickets = [];
 
 if (
     window.location.pathname.includes(
@@ -1381,8 +1371,6 @@ if (
     loadAdminDashboard();
 
 }
-
-let adminTickets = [];
 
 function displayAdminTickets(tickets) {
 
@@ -1496,7 +1484,8 @@ function filterAdminTickets() {
             return (
                 matchesSearch &&
                 matchesStatus &&
-                matchesPriority
+                matchesPriority &&
+                matchesAgent
             );
 
         });
@@ -1806,13 +1795,6 @@ if (assignTicketButton) {
 
                 const data =
                     await response.json();
-
-
-                console.log(
-                    "Assignment response:",
-                    data
-                );
-
 
                 if (response.ok) {
 

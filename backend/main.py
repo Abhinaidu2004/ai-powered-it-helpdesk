@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm # type: ignore
 from jose import jwt, JWTError # type: ignore
 from pydantic import BaseModel # type: ignore
@@ -13,10 +14,22 @@ from ai_embeddings import find_semantic_similarity
 from ai_rag import generate_solution
 from dotenv import load_dotenv
 import os
+from typing import Optional
 
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -44,12 +57,14 @@ class TicketUpdate(BaseModel):
     description: str
     priority: str
     status: str
+    resolution: Optional[str] = None
 
 class TicketAssignment(BaseModel):
     assigned_to: int
 
 class StatusUpdate(BaseModel):
     status: str
+    resolution: Optional[str] = None
 
 class UserRegister(BaseModel):
     name: str
@@ -371,8 +386,15 @@ def create_ticket(ticket: Ticket):
 
     sql = """
     INSERT INTO tickets
-    (title, description, priority, category, user_id)
-    VALUES (%s, %s, %s, %s, %s)
+    (
+        title,
+        description,
+        priority,
+        category,
+        user_id,
+        recommended_solution
+    )
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
 
     values = (
@@ -380,13 +402,16 @@ def create_ticket(ticket: Ticket):
         ticket.description,
         ai_priority,
         ai_category,
-        ticket.user_id
+        ticket.user_id,
+        solution
     )
 
     cursor.execute(sql, values)
 
     db.commit()
+
     cursor.close()
+    db.close()
 
     return {
         "message": "Ticket created successfully",
@@ -394,7 +419,7 @@ def create_ticket(ticket: Ticket):
         "priority": ai_priority,
         "recommended_solution": solution
     }
-    
+
 @app.get("/users")
 def get_users():
 
@@ -500,10 +525,14 @@ def update_ticket(
     current_user: dict = Depends(get_current_user)
 ):
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT id FROM tickets WHERE id = %s",
+        """
+        SELECT id, user_id, assigned_to, title, description, priority, status
+        FROM tickets
+        WHERE id = %s
+        """,
         (ticket_id,)
     )
 
@@ -511,18 +540,63 @@ def update_ticket(
 
     if existing_ticket is None:
         cursor.close()
+        db.close()
+
         raise HTTPException(
             status_code=404,
             detail="Ticket not found"
         )
 
+    # -------------------------
+    # Authorization
+    # -------------------------
+
+    if current_user["role"] == "admin":
+        pass
+
+    elif current_user["role"] == "agent":
+
+        if existing_ticket["assigned_to"] != current_user["user_id"]:
+            cursor.close()
+            db.close()
+
+            raise HTTPException(
+                status_code=403,
+                detail="You can only update tickets assigned to you"
+            )
+
+    elif current_user["role"] == "employee":
+
+        if existing_ticket["user_id"] != current_user["user_id"]:
+            cursor.close()
+            db.close()
+
+            raise HTTPException(
+                status_code=403,
+                detail="You can only update your own tickets"
+            )
+
+    else:
+        cursor.close()
+        db.close()
+
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid user role"
+        )
+
+    # -------------------------
+    # Update ticket
+    # -------------------------
+
     sql = """
-    UPDATE tickets
-    SET title = %s,
-        description = %s,
-        priority = %s,
-        status = %s
-    WHERE id = %s
+        UPDATE tickets
+        SET title = %s,
+            description = %s,
+            priority = %s,
+            status = %s,
+            resolution = %s
+        WHERE id = %s
     """
 
     values = (
@@ -530,52 +604,19 @@ def update_ticket(
         ticket.description,
         ticket.priority,
         ticket.status,
+        ticket.resolution,
         ticket_id
     )
 
     cursor.execute(sql, values)
+
     db.commit()
 
     cursor.close()
+    db.close()
 
     return {
         "message": "Ticket updated successfully"
-    }
-
-
-@app.delete("/tickets/{ticket_id}")
-def delete_ticket(
-    ticket_id: int,
-    current_user: dict = Depends(get_current_user)
-):
-    
-    db = get_db_connection()
-    cursor = db.cursor()
-
-    cursor.execute(
-        "SELECT id FROM tickets WHERE id = %s",
-        (ticket_id,)
-    )
-
-    existing_ticket = cursor.fetchone()
-
-    if existing_ticket is None:
-        cursor.close()
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found"
-        )
-
-    cursor.execute(
-        "DELETE FROM tickets WHERE id = %s",
-        (ticket_id,)
-    )
-
-    db.commit()
-    cursor.close()
-
-    return {
-        "message": "Ticket deleted successfully"
     }
 
 @app.put("/tickets/{ticket_id}/assign")
@@ -692,14 +733,14 @@ def update_ticket_status(
             status_code=400,
             detail="Invalid status"
         )
-    
+
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
 
     # Get ticket
     cursor.execute(
         """
-        SELECT id, user_id, assigned_to, status
+        SELECT id, user_id, assigned_to, status, resolution
         FROM tickets
         WHERE id = %s
         """,
@@ -710,6 +751,8 @@ def update_ticket_status(
 
     if ticket is None:
         cursor.close()
+        db.close()
+
         raise HTTPException(
             status_code=404,
             detail="Ticket not found"
@@ -723,7 +766,10 @@ def update_ticket_status(
     elif current_user["role"] == "agent":
 
         if ticket["assigned_to"] != current_user["user_id"]:
+
             cursor.close()
+            db.close()
+
             raise HTTPException(
                 status_code=403,
                 detail="You can only update tickets assigned to you"
@@ -733,41 +779,87 @@ def update_ticket_status(
     elif current_user["role"] == "employee":
 
         if ticket["user_id"] != current_user["user_id"]:
+
             cursor.close()
+            db.close()
+
             raise HTTPException(
                 status_code=403,
                 detail="You can only update your own tickets"
             )
 
+    # Update status and resolution
     cursor.execute(
         """
         UPDATE tickets
-        SET status = %s
+        SET status = %s,
+            resolution = %s
         WHERE id = %s
         """,
-        (data.status, ticket_id)
-    )
-
-    cursor.execute(
-        """
-        INSERT INTO ticket_history
-        (ticket_id, user_id, action, old_value, new_value)
-        VALUES (%s, %s, %s, %s, %s)
-        """,
         (
-            ticket_id,
-            current_user["user_id"],
-            "Status Changed",
-            ticket["status"],
-            data.status
+            data.status,
+            data.resolution,
+            ticket_id
         )
     )
 
+    # Record status change
+    if ticket["status"] != data.status:
+
+        cursor.execute(
+            """
+            INSERT INTO ticket_history
+            (
+                ticket_id,
+                user_id,
+                action,
+                old_value,
+                new_value
+            )
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (
+                ticket_id,
+                current_user["user_id"],
+                "Status Changed",
+                ticket["status"],
+                data.status
+            )
+        )
+
+    # Record resolution change
+    if ticket["resolution"] != data.resolution:
+
+        cursor.execute(
+            """
+            INSERT INTO ticket_history
+            (
+                ticket_id,
+                user_id,
+                action,
+                old_value,
+                new_value
+            )
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (
+                ticket_id,
+                current_user["user_id"],
+                "Resolution Updated",
+                ticket["resolution"],
+                data.resolution
+            )
+        )
+
     db.commit()
+
     cursor.close()
+    db.close()
 
     return {
-        "message": "Ticket status updated successfully"
+        "message": "Ticket status and resolution updated successfully",
+        "status": data.status,
+        "resolution": data.resolution
     }
 
 @app.get("/tickets/{ticket_id}/history")
