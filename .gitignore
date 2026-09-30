@@ -27,3 +27,6 @@ Thumbs.db
 
 # Test virtual environment
 testenv/
+
+#CA certificate file
+*.pem
