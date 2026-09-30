@@ -619,6 +619,99 @@ def update_ticket(
         "message": "Ticket updated successfully"
     }
 
+@app.delete("/tickets/{ticket_id}")
+def delete_ticket(
+    ticket_id: int,
+    current_user: dict = Depends(get_current_user)
+):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        """
+        SELECT id, user_id, assigned_to
+        FROM tickets
+        WHERE id = %s
+        """,
+        (ticket_id,)
+    )
+
+    existing_ticket = cursor.fetchone()
+
+    if existing_ticket is None:
+        cursor.close()
+        db.close()
+        raise HTTPException(
+            status_code=404,
+            detail="Ticket not found"
+        )
+
+    # Authorization
+    if current_user["role"] == "admin":
+        pass
+
+    elif current_user["role"] == "agent":
+        if existing_ticket["assigned_to"] != current_user["user_id"]:
+            cursor.close()
+            db.close()
+            raise HTTPException(
+                status_code=403,
+                detail="You can only delete tickets assigned to you"
+            )
+
+    elif current_user["role"] == "employee":
+        if existing_ticket["user_id"] != current_user["user_id"]:
+            cursor.close()
+            db.close()
+            raise HTTPException(
+                status_code=403,
+                detail="You can only delete your own tickets"
+            )
+
+    else:
+        cursor.close()
+        db.close()
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid user role"
+        )
+
+    # Delete history
+    cursor.execute(
+        """
+        DELETE FROM ticket_history
+        WHERE ticket_id = %s
+        """,
+        (ticket_id,)
+    )
+
+    # Delete comments
+    cursor.execute(
+        """
+        DELETE FROM ticket_comments
+        WHERE ticket_id = %s
+        """,
+        (ticket_id,)
+    )
+
+    # Delete ticket
+    cursor.execute(
+        """
+        DELETE FROM tickets
+        WHERE id = %s
+        """,
+        (ticket_id,)
+    )
+
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    return {
+        "message": "Ticket deleted successfully"
+    }
+    
 @app.put("/tickets/{ticket_id}/assign")
 def assign_ticket(
     ticket_id: int,
