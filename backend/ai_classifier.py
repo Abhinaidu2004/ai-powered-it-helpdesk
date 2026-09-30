@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
+
 # Training data
 tickets = [
     "Wi-Fi is not working",
@@ -68,31 +69,41 @@ priorities = [
 
     "High",
     "High",
-    "High",
     "High"
 ]
 
 
-# Convert text into numbers
-vectorizer = TfidfVectorizer()
-
-X = vectorizer.fit_transform(tickets)
-
-
-# Category model
-category_model = LogisticRegression()
-
-category_model.fit(X, categories)
+# Models are not created at startup
+vectorizer = None
+category_model = None
+priority_model = None
 
 
-# Priority model
-priority_model = LogisticRegression()
+def get_models():
 
-priority_model.fit(X, priorities)
+    global vectorizer
+    global category_model
+    global priority_model
+
+    if vectorizer is None:
+
+        vectorizer = TfidfVectorizer()
+
+        X = vectorizer.fit_transform(tickets)
+
+        category_model = LogisticRegression()
+        category_model.fit(X, categories)
+
+        priority_model = LogisticRegression()
+        priority_model.fit(X, priorities)
+
+    return vectorizer, category_model, priority_model
 
 
 # Prediction function
 def predict_ticket(ticket_text):
+
+    vectorizer, category_model, priority_model = get_models()
 
     ticket_vector = vectorizer.transform([ticket_text])
 

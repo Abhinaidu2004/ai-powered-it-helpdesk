@@ -1,8 +1,20 @@
-from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# Model is not loaded at startup
+model = None
+
+
+def get_embedding_model():
+
+    global model
+
+    if model is None:
+        from sentence_transformers import SentenceTransformer
+
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    return model
 
 
 def find_semantic_similarity(new_ticket, previous_tickets, top_n=3):
@@ -17,9 +29,11 @@ def find_semantic_similarity(new_ticket, previous_tickets, top_n=3):
             ticket["title"] + " " + ticket["description"]
         )
 
-    new_embedding = model.encode([new_ticket])
+    embedding_model = get_embedding_model()
 
-    previous_embeddings = model.encode(ticket_texts)
+    new_embedding = embedding_model.encode([new_ticket])
+
+    previous_embeddings = embedding_model.encode(ticket_texts)
 
     similarity_scores = cosine_similarity(
         new_embedding,
@@ -48,6 +62,7 @@ def find_semantic_similarity(new_ticket, previous_tickets, top_n=3):
     )
 
     return results[:top_n]
+
 
 if __name__ == "__main__":
 

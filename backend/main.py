@@ -5,13 +5,6 @@ from jose import jwt, JWTError # type: ignore
 from pydantic import BaseModel # type: ignore
 import mysql.connector # type: ignore
 from passlib.context import CryptContext # type: ignore
-from jose import jwt # type: ignore
-from ai_classifier import predict_ticket
-from ai_summarizer import summarize_ticket
-from ai_solutions import recommend_solution
-from ai_similarity import find_similar_tickets
-from ai_embeddings import find_semantic_similarity
-from ai_rag import generate_solution
 from dotenv import load_dotenv
 import os
 from typing import Optional
@@ -1616,6 +1609,8 @@ def analytics_categories(
 @app.post("/ai/classify")
 def classify_ticket(data: AIClassificationRequest):
 
+    from ai_classifier import predict_ticket
+
     ticket_text = data.title + " " + data.description
 
     category, priority = predict_ticket(ticket_text)
@@ -1625,8 +1620,11 @@ def classify_ticket(data: AIClassificationRequest):
         "priority": priority
     }
 
+
 @app.post("/ai/summarize")
 def summarize_ticket_api(data: AISummaryRequest):
+
+    from ai_summarizer import summarize_ticket
 
     ticket_text = data.title + " " + data.description
 
@@ -1636,8 +1634,11 @@ def summarize_ticket_api(data: AISummaryRequest):
         "summary": summary
     }
 
+
 @app.post("/ai/recommend")
 def recommend_ticket_solution(data: AISolutionRequest):
+
+    from ai_solutions import recommend_solution
 
     ticket_text = data.title + " " + data.description
 
@@ -1647,46 +1648,11 @@ def recommend_ticket_solution(data: AISolutionRequest):
         "solution": solution
     }
 
+
 @app.post("/ai/similar")
 def find_similar_ticket_api(data: AISimilarRequest):
 
-    ticket_text = data.title + " " + data.description
-
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-
-    cursor.execute("""
-    SELECT
-        id,
-        title,
-        description,
-        priority,
-        category,
-        resolution
-    FROM tickets
-    WHERE status = 'Resolved'
-      AND resolution IS NOT NULL
-    """)    
-
-    tickets = cursor.fetchall()
-
-    cursor.close()
-
-    previous_tickets = []
-
-    previous_tickets = tickets
-
-    results = find_similar_tickets(
-        ticket_text,
-        previous_tickets
-    )
-
-    return {
-        "similar_tickets": results
-    }
-
-@app.post("/ai/semantic-search")
-def semantic_search(data: AISimilarRequest):
+    from ai_similarity import find_similar_tickets
 
     ticket_text = data.title + " " + data.description
 
@@ -1709,6 +1675,45 @@ def semantic_search(data: AISimilarRequest):
     tickets = cursor.fetchall()
 
     cursor.close()
+    db.close()
+
+    results = find_similar_tickets(
+        ticket_text,
+        tickets
+    )
+
+    return {
+        "similar_tickets": results
+    }
+
+
+@app.post("/ai/semantic-search")
+def semantic_search(data: AISimilarRequest):
+
+    from ai_embeddings import find_semantic_similarity
+
+    ticket_text = data.title + " " + data.description
+
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id,
+            title,
+            description,
+            priority,
+            category,
+            resolution
+        FROM tickets
+        WHERE status = 'Resolved'
+          AND resolution IS NOT NULL
+    """)
+
+    tickets = cursor.fetchall()
+
+    cursor.close()
+    db.close()
 
     results = find_semantic_similarity(
         ticket_text,
@@ -1719,8 +1724,12 @@ def semantic_search(data: AISimilarRequest):
         "semantic_results": results
     }
 
+
 @app.post("/ai/rag")
 def rag_solution(data: AIRAGRequest):
+
+    from ai_embeddings import find_semantic_similarity
+    from ai_rag import generate_solution
 
     ticket_text = data.title + " " + data.description
 
@@ -1741,13 +1750,15 @@ def rag_solution(data: AIRAGRequest):
     """)
 
     tickets = cursor.fetchall()
+
     cursor.close()
+    db.close()
 
     # Find similar resolved tickets
     similar_tickets = find_semantic_similarity(
-    ticket_text,
-    tickets,
-    top_n=3
+        ticket_text,
+        tickets,
+        top_n=3
     )
 
     similar_tickets = [
@@ -1768,7 +1779,6 @@ Category: {ticket['category']}
 Priority: {ticket['priority']}
 Resolution: {ticket['resolution']}
 Similarity: {ticket['similarity']}
-
 """
 
     # Generate AI solution

@@ -1,6 +1,3 @@
-import ollama
-
-
 def generate_solution(ticket, context):
 
     if not context.strip():
@@ -8,6 +5,8 @@ def generate_solution(ticket, context):
             "status": "No relevant previous tickets found",
             "solution": "No reliable solution could be generated from previous resolved tickets."
         }
+
+    import ollama
 
     prompt = f"""
 You are an IT Help Desk AI assistant.

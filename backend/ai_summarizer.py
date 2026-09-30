@@ -1,16 +1,28 @@
-from transformers import pipeline # type: ignore
+from transformers import pipeline  # type: ignore
 
 
-# Load summarization model
-summarizer = pipeline(
-    "summarization",
-    model="sshleifer/distilbart-cnn-12-6"
-)
+# Model is not loaded at startup
+summarizer = None
+
+
+def get_summarizer():
+
+    global summarizer
+
+    if summarizer is None:
+        summarizer = pipeline(
+            "summarization",
+            model="sshleifer/distilbart-cnn-12-6"
+        )
+
+    return summarizer
 
 
 def summarize_ticket(ticket_text):
 
-    result = summarizer(
+    model = get_summarizer()
+
+    result = model(
         ticket_text,
         max_length=50,
         min_length=10,
@@ -37,4 +49,3 @@ if __name__ == "__main__":
 
     print("\nAI Summary:")
     print(summary)
-    
