@@ -69,6 +69,7 @@ priorities = [
 
     "High",
     "High",
+    "High",
     "High"
 ]
 
