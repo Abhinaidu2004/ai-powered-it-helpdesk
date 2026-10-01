@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://ai-powered-it-helpdesk-n0ua.onrender.com";
+
 // ===============================
 // LOGIN
 // ===============================
@@ -22,7 +24,7 @@ if (loginForm) {
         try {
 
             const response = await fetch(
-                "http://127.0.0.1:8000/login",
+                `${API_BASE_URL}/login`,
                 {
                     method: "POST",
 
@@ -111,7 +113,7 @@ async function loadDashboard() {
         // Get dashboard statistics
 
         const statsResponse = await fetch(
-            "http://127.0.0.1:8000/dashboard/stats",
+            `${API_BASE_URL}/dashboard/stats`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -137,7 +139,7 @@ async function loadDashboard() {
         // Get tickets
 
         const ticketsResponse = await fetch(
-            "http://127.0.0.1:8000/tickets",
+            `${API_BASE_URL}/tickets`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -258,7 +260,7 @@ async function loadTicket() {
     try {
 
         const response = await fetch(
-            `http://127.0.0.1:8000/tickets/${ticketId}`,
+            `${API_BASE_URL}/tickets/${ticketId}`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -387,7 +389,7 @@ async function loadComments(ticketId) {
     try {
 
         const response = await fetch(
-            `http://127.0.0.1:8000/tickets/${ticketId}/comments`,
+            `${API_BASE_URL}/tickets/${ticketId}/comments`,
             {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -488,7 +490,7 @@ if (commentForm) {
             try {
 
                 const response = await fetch(
-                    `http://127.0.0.1:8000/tickets/${ticketId}/comments`,
+                    `${API_BASE_URL}/tickets/${ticketId}/comments`,
                     {
                         method: "POST",
 
@@ -560,7 +562,7 @@ async function loadHistory(ticketId) {
     try {
 
         const response = await fetch(
-            `http://127.0.0.1:8000/tickets/${ticketId}/history`,
+            `${API_BASE_URL}/tickets/${ticketId}/history`,
             {
                 headers: {
                     "Authorization":
@@ -707,7 +709,7 @@ if (ticketForm) {
             try {
 
                 const response = await fetch(
-                    "http://127.0.0.1:8000/tickets",
+                    `${API_BASE_URL}/tickets`,
                     {
                         method: "POST",
 
@@ -795,7 +797,7 @@ if (registerForm) {
             try {
 
                 const response = await fetch(
-                    "http://127.0.0.1:8000/register",
+                    `${API_BASE_URL}/register`,
                     {
                         method: "POST",
 
@@ -883,7 +885,7 @@ async function loadAgentDashboard() {
     try {
 
         const response = await fetch(
-            "http://127.0.0.1:8000/tickets",
+            `${API_BASE_URL}/tickets`,
             {
                 headers: {
                     "Authorization":
@@ -1109,7 +1111,7 @@ if (updateStatusButton) {
             try {
 
                 const response = await fetch(
-                    `http://127.0.0.1:8000/tickets/${ticketId}/status`,
+                    `${API_BASE_URL}/tickets/${ticketId}/status`,
                     {
                         method: "PUT",
 
@@ -1197,7 +1199,7 @@ async function loadAdminDashboard() {
 
         const ticketResponse =
             await fetch(
-                "http://127.0.0.1:8000/tickets",
+                `${API_BASE_URL}/tickets`,
                 {
                     headers: {
                         "Authorization":
@@ -1286,7 +1288,7 @@ async function loadAdminDashboard() {
 
         const userResponse =
             await fetch(
-                "http://127.0.0.1:8000/admin/users",
+                `${API_BASE_URL}/admin/users`,
                 {
                     headers: {
                         "Authorization":
@@ -1610,7 +1612,7 @@ async function loadAssignmentData() {
 
         const ticketResponse =
             await fetch(
-                "http://127.0.0.1:8000/tickets",
+                `${API_BASE_URL}/tickets`,
                 {
                     headers: {
                         "Authorization":
@@ -1664,7 +1666,7 @@ async function loadAssignmentData() {
 
         const userResponse =
             await fetch(
-                "http://127.0.0.1:8000/admin/users",
+                `${API_BASE_URL}/admin/users`,
                 {
                     headers: {
                         "Authorization":
@@ -1773,7 +1775,7 @@ if (assignTicketButton) {
 
                 const response =
                     await fetch(
-                        `http://127.0.0.1:8000/tickets/${ticketId}/assign`,
+                        `${API_BASE_URL}/tickets/${ticketId}/assign`,
                         {
                             method: "PUT",
 
@@ -1883,7 +1885,7 @@ async function loadAgentFilter() {
 
         const response =
             await fetch(
-                "http://127.0.0.1:8000/admin/users",
+                `${API_BASE_URL}/admin/users`,
                 {
                     headers: {
                         "Authorization":
