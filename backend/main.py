@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm # type: ignore
 from jose import jwt, JWTError # type: ignore
 from pydantic import BaseModel # type: ignore
+from ai_classifier import predict_ticket
 import mysql.connector # type: ignore
 from passlib.context import CryptContext # type: ignore
 from dotenv import load_dotenv
