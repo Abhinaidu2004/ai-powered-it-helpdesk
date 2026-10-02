@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm # type: ignore
 from jose import jwt, JWTError # type: ignore
 from pydantic import BaseModel # type: ignore
-from ai_classifier import predict_ticket
 import mysql.connector # type: ignore
 from passlib.context import CryptContext # type: ignore
 from dotenv import load_dotenv
@@ -377,6 +376,9 @@ def get_tickets(
 # Create ticket
 @app.post("/tickets")
 def create_ticket(ticket: Ticket):
+
+    from ai_classifier import predict_ticket
+    from ai_solutions import recommend_solution
 
     ticket_text = ticket.title + " " + ticket.description
 
@@ -1636,7 +1638,7 @@ def summarize_ticket_api(data: AISummaryRequest):
 
 
 @app.post("/ai/recommend")
-def recommend_ticket_solution(data: AISolutionRequest):
+def recommend_solution(data: AISolutionRequest):
 
     from ai_solutions import recommend_solution
 
