@@ -64,6 +64,18 @@ button {
     cursor: pointer;
 
     font-size: 16px;
+
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
 }
 
 
@@ -481,4 +493,126 @@ th {
 
 #clearFilters:hover {
     background: #374151;
+}
+
+
+.ai-workspace {
+    margin-top: 25px;
+}
+
+.ai-button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.ai-button-grid button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ai-result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+#aiStatus {
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.ai-ticket-card {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+@media (max-width: 700px) {
+    .ai-button-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================
+   AI ASSISTANT
+================================ */
+
+.ai-workspace {
+    margin-top: 25px;
+}
+
+.ai-button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.ai-button {
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.ai-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Classify */
+.ai-classify {
+    background: #1f2937;
+}
+
+/* Summarize */
+.ai-summarize {
+    background: #1f2937;
+}
+
+/* Suggest Solution */
+.ai-recommend {
+    background: #1f2937;
+}
+
+/* Similar Tickets */
+.ai-similar {
+    background: #1f2937;
+}
+
+/* Semantic Search */
+.ai-semantic {
+    background: #1f2937;
+}
+
+/* RAG */
+.ai-rag {
+    background: #1f2937;
+}
+
+/* AI status */
+#aiStatus {
+    margin: 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+
+    .ai-button-grid {
+        grid-template-columns: 1fr;
+    }
+
 }

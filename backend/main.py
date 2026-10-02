@@ -375,7 +375,7 @@ def get_tickets(
 
 # Create ticket
 @app.post("/tickets")
-def create_ticket(ticket: Ticket):
+def create_ticket(ticket: Ticket, current_user: dict = Depends(get_current_user)):
 
     from ai_classifier import predict_ticket
     from ai_solutions import recommend_solution
@@ -409,7 +409,7 @@ def create_ticket(ticket: Ticket):
         ticket.description,
         ai_priority,
         ai_category,
-        ticket.user_id,
+        current_user["id"],
         solution
     )
 
@@ -1609,7 +1609,10 @@ def analytics_categories(
     return result
 
 @app.post("/ai/classify")
-def classify_ticket(data: AIClassificationRequest):
+def classify_ticket(
+    data: AIClassificationRequest,
+    current_user: dict = Depends(get_current_user)):
+
 
     from ai_classifier import predict_ticket
 
@@ -1624,7 +1627,7 @@ def classify_ticket(data: AIClassificationRequest):
 
 
 @app.post("/ai/summarize")
-def summarize_ticket_api(data: AISummaryRequest):
+def summarize_ticket_api(data: AISummaryRequest, current_user: dict = Depends(get_current_user)):
 
     from ai_summarizer import summarize_ticket
 
@@ -1638,7 +1641,7 @@ def summarize_ticket_api(data: AISummaryRequest):
 
 
 @app.post("/ai/recommend")
-def recommend_solution(data: AISolutionRequest):
+def recommend_solution(data: AISolutionRequest,current_user: dict = Depends(get_current_user)):
 
     from ai_solutions import recommend_solution
 
@@ -1652,7 +1655,7 @@ def recommend_solution(data: AISolutionRequest):
 
 
 @app.post("/ai/similar")
-def find_similar_ticket_api(data: AISimilarRequest):
+def find_similar_ticket_api(data: AISimilarRequest,current_user: dict = Depends(get_current_user)):
 
     from ai_similarity import find_similar_tickets
 
@@ -1690,7 +1693,7 @@ def find_similar_ticket_api(data: AISimilarRequest):
 
 
 @app.post("/ai/semantic-search")
-def semantic_search(data: AISimilarRequest):
+def semantic_search(data: AISimilarRequest,current_user: dict = Depends(get_current_user)):
 
     from ai_embeddings import find_semantic_similarity
 
@@ -1728,7 +1731,7 @@ def semantic_search(data: AISimilarRequest):
 
 
 @app.post("/ai/rag")
-def rag_solution(data: AIRAGRequest):
+def rag_solution(data: AIRAGRequest,current_user: dict = Depends(get_current_user)):
 
     from ai_embeddings import find_semantic_similarity
     from ai_rag import generate_solution

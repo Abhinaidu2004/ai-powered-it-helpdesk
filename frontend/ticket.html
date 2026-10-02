@@ -58,58 +58,114 @@
 
     </section>
 
+    <section class="ticket-section ai-workspace">
+
+        <h2>AI Assistant</h2>
+
+        <p>
+            Use AI to analyze this ticket,
+            summarize the issue,
+            find related tickets,
+            and generate solutions.
+        </p>
+
+        <div class="ai-button-grid">
+
+            <button id="aiClassifyButton" class="ai-button ai-classify">
+                Classify Ticket
+            </button>
+
+            <button id="aiSummarizeButton" class="ai-button ai-summarize">
+                Summarize
+            </button>
+
+            <button id="aiRecommendButton" class="ai-button ai-recommend">
+                Suggest Solution
+            </button>
+
+            <button id="aiSimilarButton" class="ai-button ai-similar">
+                Similar Tickets
+            </button>
+
+            <button id="aiSemanticButton" class="ai-button ai-semantic">
+                Semantic Search
+            </button>
+
+            <button id="aiRagButton" class="ai-button ai-rag">
+                RAG Solution
+            </button>
+
+        </div>
+
+        <div id="aiStatus"></div>
+
+        <div id="aiClassifyResult"></div>
+
+        <div id="aiSummarizeResult"></div>
+
+        <div id="aiRecommendResult"></div>
+
+        <div id="aiSimilarResult"></div>
+
+        <div id="aiSemanticResult"></div>
+
+        <div id="aiRagResult"></div>
+
+    </section>
+
+    <!-- Agent Actions -->
     <div
-    id="agentActions"
-    class="ticket-section"
-    style="display: none;"
->
-
-    <h2>Agent Actions</h2>
-
-    <label for="ticketStatus">
-        Update Status
-    </label>
-
-    <select id="ticketStatus">
-
-        <option value="Open">
-            Open
-        </option>
-
-        <option value="In Progress">
-            In Progress
-        </option>
-
-        <option value="Resolved">
-            Resolved
-        </option>
-
-        <option value="Closed">
-            Closed
-        </option>
-
-    </select>
-
-    <label for="ticketResolution">
-        Resolution
-    </label>
-
-    <textarea
-        id="ticketResolution"
-        rows="4"
-        placeholder="Describe how the issue was resolved..."
-    ></textarea>
-
-    <button
-        type="button"
-        id="updateStatusButton"
+        id="agentActions"
+        class="ticket-section"
+        style="display: none;"
     >
-        Update Status
-    </button>
 
-    <p id="statusMessage"></p>
+        <h2>Agent Actions</h2>
 
-</div>
+        <label for="ticketStatus">
+            Update Status
+        </label>
+
+        <select id="ticketStatus">
+
+            <option value="Open">
+                Open
+            </option>
+
+            <option value="In Progress">
+                In Progress
+            </option>
+
+            <option value="Resolved">
+                Resolved
+            </option>
+
+            <option value="Closed">
+                Closed
+            </option>
+
+        </select>
+
+        <label for="ticketResolution">
+            Resolution
+        </label>
+
+        <textarea
+            id="ticketResolution"
+            rows="4"
+            placeholder="Describe how the issue was resolved..."
+        ></textarea>
+
+        <button
+            type="button"
+            id="updateStatusButton"
+        >
+            Update Status
+        </button>
+
+        <p id="statusMessage"></p>
+
+    </div>
 
 
     <!-- Comments -->

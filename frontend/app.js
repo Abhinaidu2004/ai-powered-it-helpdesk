@@ -1,5 +1,64 @@
 const API_BASE_URL = "https://ai-powered-it-helpdesk-n0ua.onrender.com";
 
+let currentTicket = null;
+
+async function callAI(endpoint, title, description) {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${API_BASE_URL}${endpoint}`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+
+            body: JSON.stringify({
+                title: title,
+                description: description
+            })
+        }
+    );
+
+    const text = await response.text();
+
+    console.log("AI Endpoint:", endpoint);
+    console.log("HTTP Status:", response.status);
+    console.log("Raw response:", text);
+
+    if (!response.ok) {
+
+        let errorMessage = "AI request failed";
+
+        try {
+            const errorData = JSON.parse(text);
+            errorMessage = errorData.detail || errorMessage;
+        } catch (error) {
+            if (text) {
+                errorMessage = text;
+            }
+        }
+
+        throw new Error(
+            `AI request failed (${response.status}): ${errorMessage}`
+        );
+    }
+
+    if (!text.trim()) {
+        throw new Error("AI server returned an empty response.");
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("Invalid JSON:", text);
+        throw new Error("AI server returned invalid JSON.");
+    }
+}
+
 // ===============================
 // LOGIN
 // ===============================
@@ -12,9 +71,12 @@ if (loginForm) {
 
         event.preventDefault();
 
-        const email = document.getElementById("email").value;
+        const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
         const message = document.getElementById("message");
+
+        message.textContent = "Logging in...";
+        message.style.color = "blue";
 
         const formData = new URLSearchParams();
 
@@ -27,65 +89,95 @@ if (loginForm) {
                 `${API_BASE_URL}/login`,
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-
                     body: formData
                 }
             );
 
-            const data = await response.json();
+            console.log("STATUS:", response.status);
+            console.log("OK:", response.ok);
 
-            if (response.ok) {
+            const responseText = await response.text();
 
-                localStorage.setItem(
-                    "token",
-                    data.access_token
-                );
+            console.log("RAW RESPONSE:", responseText);
 
-                localStorage.setItem(
-                    "role",
-                    data.role
-                );
+            if (!response.ok) {
 
-                localStorage.setItem(
-                    "user_id",
-                    data.user_id
-                );
+                let errorMessage = "Invalid credentials";
 
-                message.textContent =
-                    "Login successful!";
+                try {
 
-                if (data.role === "admin") {
+                    const errorData = JSON.parse(responseText);
 
-                    window.location.href =
-                        "admin-dashboard.html";
+                    console.log("ERROR DATA:", errorData);
 
-                } else if (data.role === "agent") {
+                    if (errorData.detail) {
+                        errorMessage = errorData.detail;
+                    }
 
-                    window.location.href =
-                        "agent-dashboard.html";
+                } catch (error) {
 
-                } else if (data.role === "employee") {
+                    console.log("Response was not JSON.");
 
-                    window.location.href =
-                        "dashboard.html";
-
-                } else {
-
-                    message.textContent =
-                        "Unknown user role.";
                 }
+
+                message.textContent = errorMessage;
+                message.style.color = "red";
+
+                return;
             }
+
+            const data = JSON.parse(responseText);
+
+            console.log("LOGIN DATA:", data);
+
+            localStorage.setItem(
+                "token",
+                data.access_token
+            );
+
+            localStorage.setItem(
+                "role",
+                data.role
+            );
+
+            localStorage.setItem(
+                "user_id",
+                data.user_id
+            );
+
+            message.textContent = "Login successful!";
+            message.style.color = "green";
+
+            if (data.role === "admin") {
+
+                window.location.href = "admin-dashboard.html";
+
+            } else if (data.role === "agent") {
+
+                window.location.href = "agent-dashboard.html";
+
+            } else if (data.role === "employee") {
+
+                window.location.href = "dashboard.html";
+
+            } else {
+
+                message.textContent = "Unknown user role.";
+                message.style.color = "red";
+
+            }
+
         } catch (error) {
 
-            console.error(error);
+            console.error("LOGIN ERROR:", error);
 
             message.textContent =
                 "Cannot connect to the server.";
 
+            message.style.color = "red";
         }
 
     });
@@ -269,6 +361,7 @@ async function loadTicket() {
         );
 
         const ticket = await response.json();
+        currentTicket = ticket;
 
         if (!response.ok) {
 
@@ -1936,3 +2029,373 @@ async function loadAgentFilter() {
 
     }
 }
+
+
+document
+    .getElementById("aiClassifyButton")
+    ?.addEventListener("click", async () => {
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "AI is classifying the ticket...";
+
+            const data = await callAI(
+                "/ai/classify",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            document.getElementById("aiClassifyResult").innerHTML = `
+                <h3>Classification</h3>
+                <p><strong>Category:</strong> ${data.category}</p>
+                <p><strong>Priority:</strong> ${data.priority}</p>
+            `;
+
+            document.getElementById("aiStatus").textContent =
+                "Classification completed.";
+
+        } catch (error) {
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
+
+
+    document
+    .getElementById("aiSummarizeButton")
+    ?.addEventListener("click", async () => {
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "Generating summary...";
+
+            const data = await callAI(
+                "/ai/summarize",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            document.getElementById("aiSummarizeResult").innerHTML = `
+                <h3>AI Summary</h3>
+                <p>${data.summary}</p>
+            `;
+
+            document.getElementById("aiStatus").textContent =
+                "Summary generated.";
+
+        } catch (error) {
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
+
+
+  document
+    .getElementById("aiRecommendButton")
+    ?.addEventListener("click", async () => {
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "Finding recommended solution...";
+
+            const data = await callAI(
+                "/ai/recommend",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            document.getElementById("aiRecommendResult").innerHTML = `
+                <h3>Recommended Solution</h3>
+                <p>${data.solution}</p>
+            `;
+
+            document.getElementById("aiStatus").textContent =
+                "Solution generated.";
+
+        } catch (error) {
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
+    
+    
+    document
+    .getElementById("aiSimilarButton")
+    ?.addEventListener("click", async () => {
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "Searching similar tickets...";
+
+            const data = await callAI(
+                "/ai/similar",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            let html = "<h3>Similar Tickets</h3>";
+
+            if (data.similar_tickets.length === 0) {
+
+                html += "<p>No similar tickets found.</p>";
+
+            } else {
+
+                data.similar_tickets.forEach(ticket => {
+
+                    html += `
+                        <div class="ai-ticket-card">
+
+                            <strong>
+                                Ticket #${ticket.ticket_id}
+                            </strong>
+
+                            <p>${ticket.title}</p>
+
+                            <p>
+                                Similarity:
+                                ${ticket.similarity}
+                            </p>
+
+                            <p>
+                                Resolution:
+                                ${ticket.resolution || "N/A"}
+                            </p>
+
+                        </div>
+                    `;
+
+                });
+
+            }
+
+            document.getElementById("aiSimilarResult").innerHTML = html;
+
+            document.getElementById("aiStatus").textContent =
+                "Similar ticket search completed.";
+
+        } catch (error) {
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
+
+
+    document
+    .getElementById("aiSemanticButton")
+    ?.addEventListener("click", async () => {
+
+        console.log("SEMANTIC SEARCH STARTED");
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "Searching semantically...";
+
+            if (!currentTicket) {
+                throw new Error("No ticket is currently loaded.");
+            }
+
+            const data = await callAI(
+                "/ai/semantic-search",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            console.log("Semantic Search Data:", data);
+
+            let html = "<h3>Semantic Search Results</h3>";
+
+            if (
+                !data.semantic_results ||
+                data.semantic_results.length === 0
+            ) {
+
+                html += `
+                    <div class="ai-ticket-card">
+                        <p>No semantically similar tickets found.</p>
+                    </div>
+                `;
+
+            } else {
+
+                data.semantic_results.forEach(ticket => {
+
+                    html += `
+                        <div class="ai-ticket-card">
+
+                            <strong>
+                                Ticket #${ticket.ticket_id}
+                            </strong>
+
+                            <p>
+                                <strong>${ticket.title}</strong>
+                            </p>
+
+                            <p>
+                                ${ticket.description}
+                            </p>
+
+                            <p>
+                                <strong>Similarity:</strong>
+                                ${(ticket.similarity * 100).toFixed(1)}%
+                            </p>
+
+                            <p>
+                                <strong>Resolution:</strong>
+                                ${ticket.resolution || "N/A"}
+                            </p>
+
+                        </div>
+                    `;
+
+                });
+
+            }
+
+            document.getElementById("aiSemanticResult").innerHTML =
+                html;
+
+            document.getElementById("aiStatus").textContent =
+                "Semantic search completed.";
+
+        } catch (error) {
+
+            console.error("Semantic Search Error:", error);
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
+
+
+    document
+    .getElementById("aiRagButton")
+    ?.addEventListener("click", async () => {
+
+        try {
+
+            document.getElementById("aiStatus").textContent =
+                "Generating RAG solution...";
+
+            const data = await callAI(
+                "/ai/rag",
+                currentTicket.title,
+                currentTicket.description
+            );
+
+            const aiSolution = data.ai_solution || {};
+
+            let html = `
+                <h3>AI RAG Solution</h3>
+
+                <div class="ai-ticket-card">
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${aiSolution.status || "Unknown"}
+                    </p>
+
+                    <p>
+                        <strong>Solution:</strong>
+                    </p>
+
+                    <p>
+                        ${aiSolution.solution || "No solution available."}
+                    </p>
+
+                </div>
+
+                <h4>Supporting Tickets</h4>
+            `;
+
+            if (
+                data.similar_tickets &&
+                data.similar_tickets.length > 0
+            ) {
+
+                data.similar_tickets.forEach(ticket => {
+
+                    html += `
+                        <div class="ai-ticket-card">
+
+                            <strong>
+                                Ticket #${ticket.ticket_id}
+                            </strong>
+
+                            <p>
+                                <strong>${ticket.title}</strong>
+                            </p>
+
+                            <p>
+                                ${ticket.description}
+                            </p>
+
+                            <p>
+                                <strong>Similarity:</strong>
+                                ${(ticket.similarity * 100).toFixed(1)}%
+                            </p>
+
+                            ${
+                                ticket.resolution
+                                    ? `
+                                        <p>
+                                            <strong>Previous Resolution:</strong>
+                                            ${ticket.resolution}
+                                        </p>
+                                      `
+                                    : ""
+                            }
+
+                        </div>
+                    `;
+
+                });
+
+            } else {
+
+                html += `
+                    <div class="ai-ticket-card">
+                        <p>
+                            No sufficiently similar resolved tickets
+                            were found.
+                        </p>
+                    </div>
+                `;
+
+            }
+
+            document.getElementById("aiRagResult").innerHTML =
+                html;
+
+            document.getElementById("aiStatus").textContent =
+                "RAG solution generated.";
+
+        } catch (error) {
+
+            console.error("RAG Error:", error);
+
+            document.getElementById("aiStatus").textContent =
+                error.message;
+
+        }
+
+    });
