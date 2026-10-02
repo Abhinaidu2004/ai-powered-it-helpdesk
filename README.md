@@ -1,149 +1,163 @@
-# AI-Powered IT Help Desk System
+# AI-Powered IT Help Desk
 
-An AI-powered IT Help Desk platform for managing IT support tickets, users, assignments, ticket workflows, and intelligent support recommendations.
+An AI-powered IT support and ticket management system designed to help employees report technical issues and assist support teams with intelligent ticket analysis and troubleshooting.
 
-## Features
+## 🌐 Live Demo
 
-* Role-based authentication and authorization
-* Employee, Agent, and Admin dashboards
-* Ticket creation, tracking, assignment, and resolution
-* Ticket comments and history tracking
-* Priority and category management
-* AI-based ticket classification
-* AI-based ticket summarization
-* Automated solution recommendations
-* Semantic search using embeddings
-* RAG-based solution generation
-* RESTful APIs using FastAPI
-* MySQL database integration
-* JWT authentication
-* Role-based API security
+The application is deployed and available online:
 
-## Tech Stack
+* **Frontend:** https://ai-powered-it-helpdesk-01.onrender.com
+* **Backend API:** https://ai-powered-it-helpdesk-n0ua.onrender.com
+* **API Documentation:** https://ai-powered-it-helpdesk-n0ua.onrender.com/docs
 
-### Backend
+> **Note:** The application is hosted on Render's free tier, so the backend may take a few seconds to start after a period of inactivity.
 
-* Python
-* FastAPI
-* REST APIs
-* JWT
-* MySQL
+## 🚀 Features
 
-### Frontend
+* 🔐 **JWT Authentication & Role-Based Access**
 
-* HTML
-* CSS
-* JavaScript
+  * Employee, Agent, and Admin roles
+  * Secure login and protected API endpoints
 
-### AI / Machine Learning
+* 🎫 **Ticket Management**
 
-* Scikit-learn
-* TF-IDF
-* Logistic Regression
-* Transformers
-* Sentence Transformers
-* Embeddings
-* RAG
-* Ollama / Llama 3
+  * Create and track IT support tickets
+  * View ticket details, status, priority, and category
+  * Add comments and maintain ticket history
+  * Record ticket resolutions
 
-### Tools
+* 🤖 **AI-Powered Assistance**
 
-* Git
-* GitHub
-* VS Code
+  * Automatic ticket classification
+  * Priority prediction
+  * Ticket summarization
+  * Solution recommendations
+  * Similar ticket search
+  * Semantic search
+  * RAG-based troubleshooting assistance
 
-## System Architecture
+* 🗄️ **Database Management**
+
+  * MySQL database
+  * Stores users, tickets, comments, resolutions, and ticket history
+
+* 🌐 **Deployment**
+
+  * Frontend and backend deployed using Render
+  * Source code managed with Git and GitHub
+
+## 🛠️ Technology Stack
+
+| Layer           | Technologies                               |
+| --------------- | ------------------------------------------ |
+| Frontend        | HTML, CSS, JavaScript                      |
+| Backend         | Python, FastAPI                            |
+| Database        | MySQL                                      |
+| Authentication  | JWT                                        |
+| AI/NLP          | Python, Embeddings, Similarity Search, RAG |
+| Version Control | Git, GitHub                                |
+| Deployment      | Render                                     |
+
+## 🏗️ Architecture
 
 ```text
-                    AI-Powered IT Help Desk
-                              |
-        +---------------------+---------------------+
-        |                     |                     |
-     Frontend              Backend               AI Layer
- HTML/CSS/JavaScript       FastAPI              Classification
-        |                     |                  Summarization
-        |                     |                  Embeddings
-        |                     |                  RAG / LLM
-        |                     |
-        +---------------------+
-                              |
-                           MySQL
-                              |
-                    Users / Tickets /
-                    Comments / History
+                    ┌─────────────────────┐
+                    │       Employee      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      Frontend       │
+                    │  HTML/CSS/JavaScript│
+                    └──────────┬──────────┘
+                               │ REST API
+                               ▼
+                    ┌─────────────────────┐
+                    │       FastAPI       │
+                    │       Backend       │
+                    └──────┬────────┬─────┘
+                           │        │
+                 ┌─────────┘        └─────────┐
+                 ▼                            ▼
+        ┌─────────────────┐          ┌─────────────────┐
+        │      MySQL      │          │    AI Layer     │
+        │     Database    │          │                 │
+        └─────────────────┘          │ Classification  │
+                                     │ Summarization   │
+                                     │ Recommendations │
+                                     │ Similarity      │
+                                     │ Semantic Search │
+                                     │ RAG             │
+                                     └─────────────────┘
 ```
 
-## User Roles
+## ⚙️ AI Workflow
+
+When an employee creates a ticket:
+
+```text
+New Ticket
+    │
+    ▼
+AI Classification
+    │
+    ├── Category
+    └── Priority
+    │
+    ▼
+AI Summarization
+    │
+    ▼
+Solution Recommendation
+    │
+    ▼
+Similar / Semantic Ticket Search
+    │
+    ▼
+RAG-Based Assistance
+    │
+    ▼
+Support Resolution
+```
+
+The system can use previously resolved tickets as a knowledge source to identify related issues and provide troubleshooting information.
+
+## 🔑 Authentication & Roles
 
 ### Employee
 
 * Create tickets
-* View own tickets
+* View submitted tickets
 * Add comments
-* Track ticket status
-* View AI recommendations
+* Use AI assistance
 
 ### Agent
 
-* View assigned tickets
+* View support tickets
 * Update ticket status
-* Work on assigned issues
-* Add comments
-* Resolve tickets
+* Add resolutions
+* Use AI-powered troubleshooting
 
 ### Admin
 
-* View all tickets
-* Assign tickets to agents
-* Manage users
-* Monitor ticket workflows
-* Access administrative functions
+* Manage users and system access
+* Monitor tickets
+* Access administrative functionality
 
-## AI Features
+## 🗄️ Database
 
-### Ticket Classification
+The MySQL database stores information such as:
 
-The system analyzes the ticket title and description and predicts:
+* Users
+* Tickets
+* Ticket comments
+* Ticket status
+* Ticket priority
+* Ticket category
+* Ticket resolutions
+* Ticket history
 
-* Category
-* Priority
-
-Categories include:
-
-* Network
-* Hardware
-* Software
-* Account
-
-### Ticket Summarization
-
-Long ticket descriptions can be summarized using a transformer-based model.
-
-### Solution Recommendations
-
-The system analyzes the issue and provides possible troubleshooting solutions.
-
-### Semantic Search
-
-Sentence embeddings are used to identify tickets with similar meanings rather than relying only on exact keywords.
-
-### RAG
-
-Relevant resolved tickets are retrieved and used as context for generating more useful IT support solutions.
-
-## Security
-
-The application includes:
-
-* JWT authentication
-* Password hashing
-* Role-based authorization
-* Protected API endpoints
-* Ticket ownership validation
-* Agent assignment validation
-* Unauthorized-access testing
-
-## Project Structure
+## 📂 Project Structure
 
 ```text
 IT-Helpdesk/
@@ -151,39 +165,38 @@ IT-Helpdesk/
 ├── backend/
 │   ├── main.py
 │   ├── ai_classifier.py
+│   ├── ai_summarizer.py
+│   ├── ai_solutions.py
+│   ├── ai_similarity.py
 │   ├── ai_embeddings.py
 │   ├── ai_rag.py
-│   ├── ai_similarity.py
-│   ├── ai_solutions.py
-│   └── ai_summarizer.py
+│   ├── database.py
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── index.html
 │   ├── login.html
-│   ├── register.html
 │   ├── dashboard.html
-│   ├── agent-dashboard.html
-│   ├── admin-dashboard.html
-│   ├── create-ticket.html
 │   ├── ticket.html
+│   ├── admin-dashboard.html
+│   ├── agent-dashboard.html
 │   ├── app.js
 │   └── style.css
 │
-├── requirements.txt
-├── .gitignore
+├── .python-version
 └── README.md
 ```
 
-## Installation
+## 🚀 Local Setup
 
-Clone the repository:
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Abhinaidu2004/ai-powered-it-helpdesk.git
-cd ai-powered-it-helpdesk
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd IT-Helpdesk
 ```
 
-Create a virtual environment:
+### 2. Create a Virtual Environment
 
 ```bash
 python -m venv venv
@@ -192,74 +205,91 @@ python -m venv venv
 Activate it on Windows:
 
 ```powershell
-.\venv\Scripts\Activate.ps1
+venv\Scripts\activate
 ```
 
-Install dependencies:
+### 3. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
-Create a `.env` file inside `backend/` and configure the database and application secrets.
+### 4. Configure Environment Variables
 
-Example:
+Create a `.env` file inside the `backend` directory:
 
 ```env
-SECRET_KEY=your-secret-key
 DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your-mysql-password
+DB_USER=your_username
+DB_PASSWORD=your_password
 DB_NAME=it_helpdesk
+SECRET_KEY=your_secret_key
 ```
 
-Start the FastAPI server:
+### 5. Start the FastAPI Backend
 
 ```bash
 cd backend
 uvicorn main:app --reload
 ```
 
-API documentation will be available at:
+The API will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+FastAPI documentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-## Database
+### 6. Run the Frontend
 
-The project uses MySQL.
+Open the frontend using a local development server or serve the `frontend` directory through your preferred web server.
 
-Database:
+## 🔒 Security
 
-```text
-it_helpdesk
-```
+* JWT-based authentication
+* Password hashing
+* Protected API endpoints
+* Role-based authorization
+* Environment variables for sensitive configuration
+* CORS configuration for the deployed frontend
 
-Main tables:
+## 📌 Future Improvements
 
-```text
-users
-tickets
-ticket_comments
-ticket_history
-```
+* AI-powered automatic ticket routing
+* Real-time notifications
+* Advanced analytics dashboard
+* Vector database for scalable semantic search
+* Improved RAG knowledge base
+* Automated agent assignment
+* Email and notification integration
 
-## Future Improvements
+## 🎯 Project Purpose
 
+This project was developed as a practical full-stack application to demonstrate skills in:
+
+* Python backend development
+* REST API development
+* FastAPI
+* MySQL database management
+* JWT authentication
+* Role-based access control
+* AI/NLP integration
+* Semantic search and RAG
+* Frontend development
+* Git/GitHub
 * Cloud deployment
-* Production database
-* Email notifications
-* Advanced analytics
-* Automated ticket assignment
-* Improved AI model training
-* Monitoring and logging
-* Docker support
-* CI/CD pipeline
 
-## Author
+## 👨‍💻 Author
 
-**SAI KRISHNA NATHI**
+**Saikrishna Nathi**
 
-Python Developer | Backend Development | SQL | AI/NLP
+> Full-Stack Python project focused on AI-assisted IT support and intelligent ticket management.
 
+## 📄 License
+
+This project is intended for educational and portfolio purposes.
